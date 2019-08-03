@@ -1,0 +1,1 @@
+<view><button type="primary" data-event-opts="{{[['tap',[['gotochuxian',['$event']]]]]}}" bindtap="__e">出现吧</button><block wx:if="{{show}}"><view class="animated fadeIn fast">hello.</view></block></view>
