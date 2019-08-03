@@ -1061,6 +1061,8 @@ function gz$gwx_1(){
 if( __WXML_GLOBAL__.ops_cached.$gwx_1)return __WXML_GLOBAL__.ops_cached.$gwx_1
 __WXML_GLOBAL__.ops_cached.$gwx_1=[];
 (function(z){var a=11;function Z(ops){z.push(ops)}
+Z([3,'iconfont icon-2fanhui'])
+Z([3,'font-size:50rpx;'])
 Z([3,'__e'])
 Z([[4],[[5],[[4],[[5],[[5],[1,'tap']],[[4],[[5],[[4],[[5],[[5],[1,'gotochuxian']],[[4],[[5],[1,'$event']]]]]]]]]]])
 Z([3,'primary'])
@@ -1078,18 +1080,20 @@ var x=['./pages/index/index.wxml'];d_[x[0]]={}
 var m0=function(e,s,r,gg){
 var z=gz$gwx_1()
 var oB=_n('view')
-var oD=_mz(z,'button',['bindtap',0,'data-event-opts',1,'type',1],[],e,s,gg)
-var fE=_oz(z,3,e,s,gg)
-_(oD,fE)
+var oD=_mz(z,'view',['class',0,'style',1],[],e,s,gg)
 _(oB,oD)
+var fE=_mz(z,'button',['bindtap',2,'data-event-opts',1,'type',2],[],e,s,gg)
+var cF=_oz(z,5,e,s,gg)
+_(fE,cF)
+_(oB,fE)
 var xC=_v()
 _(oB,xC)
-if(_oz(z,4,e,s,gg)){xC.wxVkey=1
-var cF=_n('view')
-_rz(z,cF,'class',5,e,s,gg)
-var hG=_oz(z,6,e,s,gg)
-_(cF,hG)
-_(xC,cF)
+if(_oz(z,6,e,s,gg)){xC.wxVkey=1
+var hG=_n('view')
+_rz(z,hG,'class',7,e,s,gg)
+var oH=_oz(z,8,e,s,gg)
+_(hG,oH)
+_(xC,hG)
 }
 xC.wxXCkey=1
 _(r,oB)
