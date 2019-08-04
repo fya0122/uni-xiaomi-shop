@@ -6,12 +6,15 @@
 		<index-nav @handleclickicon="handleclickicon" :icons="icons"></index-nav>
 		<!-- 全局分割线 -->
 		<divider></divider>
+		<!-- 广告 -->
+		<three-adv @handleclickad="handleclickad" :threeadv="threeadv"></three-adv>
 	</view>
 </template>
 
 <script>
 import swiperImage from '../../components/index/swiper-image.vue';
 import indexNav from '../../components/index/index-nav.vue';
+import threeAdv from '../../components/index/three-adv.vue';
 export default {
 	data() {
 		return {
@@ -31,12 +34,18 @@ export default {
 				{ id: 8, src: '../../static/indexnav/8.gif', text: '电视热卖' },
 				{ id: 9, src: '../../static/indexnav/9.gif', text: '家电热卖' },
 				{ id: 10, src: '../../static/indexnav/10.gif', text: '米粉卡' },
-			]
+			],
+			threeadv: {
+				big: { src: '../../static/images/demo/demo1.jpg' },
+				smalltop: { src: '../../static/images/demo/demo2.jpg' },
+				smallbottom: { src: '../../static/images/demo/demo2.jpg' }
+			}
 		};
 	},
 	components: {
 		swiperImage,
-		indexNav
+		indexNav,
+		threeAdv
 	},
 	methods: {
 		handleclickimg(obj) {
@@ -44,6 +53,9 @@ export default {
 		},
 		handleclickicon(obj) {
 			console.log(obj);
+		},
+		handleclickad(obj) {
+			console.log(obj)
 		}
 	}
 };
