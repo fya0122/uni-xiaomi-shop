@@ -1134,7 +1134,7 @@ __wxAppCode__['pages/cart/cart.wxml']=$gwx('./pages/cart/cart.wxml');
 __wxAppCode__['pages/class/class.json']={"usingComponents":{}};
 __wxAppCode__['pages/class/class.wxml']=$gwx('./pages/class/class.wxml');
 
-__wxAppCode__['pages/index/index.json']={"usingComponents":{}};
+__wxAppCode__['pages/index/index.json']={"scrollIndicator":"none","titleNView":{"searchInput":{"align":"left","backgroundColor":"#f7f7f7","borderRadius":"4px","disabled":true,"placeholder":"智能积木 越野四驱车","placeholderColor":"#cccccc"},"buttons":[{"color":"#989898","colorPressed":"#fd6801","float":"left","fontSize":"22px","fontSrc":"static/font/iconfont.ttf","text":""},{"color":"#989898","colorPressed":"#fd6801","float":"right","fontSize":"22px","fontSrc":"static/font/iconfont.ttf","text":""}]},"usingComponents":{}};
 __wxAppCode__['pages/index/index.wxml']=$gwx('./pages/index/index.wxml');
 
 __wxAppCode__['pages/my/my.json']={"usingComponents":{}};
