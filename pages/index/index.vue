@@ -4,6 +4,8 @@
 		<swiper-image @handleclickimg="handleclickimg" :swipers="swipers"></swiper-image>
 		<!-- 首页分类 -->
 		<index-nav @handleclickicon="handleclickicon" :icons="icons"></index-nav>
+		<!-- 全局分割线 -->
+		<divider></divider>
 	</view>
 </template>
 
