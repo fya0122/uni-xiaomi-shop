@@ -4,6 +4,8 @@ export default {};
 <style>
 /* 官方uni.css */
 @import './common/uni.css';
+/* 布局库 */
+@import './common/zcm-main.css';
 /* 第三方动画库 */
 @import './common/animate.css';
 /* 自定义图标库 */
