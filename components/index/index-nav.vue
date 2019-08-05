@@ -11,6 +11,7 @@
 
 <script>
 export default {
+	name: 'indexnav',
 	props: {
 		icons: Array
 	},

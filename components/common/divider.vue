@@ -1,6 +1,11 @@
 <template>
 	<view class="divider"></view>
 </template>
+<script>
+export default {
+	name: 'divider'
+};
+</script>
 <style scoped>
 .divider {
 	height: 18upx;
