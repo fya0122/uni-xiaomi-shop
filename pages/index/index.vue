@@ -15,6 +15,12 @@
 			<block slot="title">每日精选</block>
 			<image src="../../static/images/bg.jpg" mode="widthFix"></image>
 		</card>
+		<!-- 公共列表组件 -->
+		<view class="row j-sb">
+			<block v-for="item of commonList" :key="item.id">
+				<common-list :obj="item"></common-list>
+			</block>
+		</view>
 	</view>
 </template>
 
@@ -24,7 +30,16 @@ import indexNav from '../../components/index/index-nav.vue';
 import divider from '../../components/common/divider.vue';
 import threeAdv from '../../components/index/three-adv.vue';
 import card from '../../components/common/card.vue';
+import commonList from '../../components/common/common-list.vue'
 export default {
+	components: {
+		swiperImage,
+		indexNav,
+		threeAdv,
+		divider,
+		card,
+		commonList
+	},
 	data() {
 		return {
 			swipers: [{ id: 1, src: '../../static/images/demo/demo4.jpg' }, { id: 2, src: '../../static/images/demo/demo4.jpg' }, { id: 3, src: '../../static/images/demo/demo4.jpg' }],
@@ -45,15 +60,15 @@ export default {
 				smalltop: { src: '../../static/images/demo/demo2.jpg' },
 				smallbottom: { src: '../../static/images/demo/demo2.jpg' }
 			},
-			bodyCover: '../../static/images/demo/demo4.jpg'
+			bodyCover: '../../static/images/demo/demo4.jpg',
+			commonList: [
+				{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调1', desc: '1.5匹变频', oprice: 2699, pprice: 1399, id: 1 },
+				{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调2', desc: '1.5匹变频', oprice: 2698, pprice: 1398, id: 2 },
+				{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调3', desc: '1.6匹变频', oprice: 2697, pprice: 1397, id: 3 },
+				{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.7匹变频', oprice: 2696, pprice: 1396, id: 4 },
+				{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 5 },
+			]
 		};
-	},
-	components: {
-		swiperImage,
-		indexNav,
-		threeAdv,
-		divider,
-		card
 	},
 	methods: {
 		handleclickimg(obj) {
