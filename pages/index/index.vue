@@ -1,85 +1,254 @@
 <template>
-	<view>
-		<!-- 轮播图组件 -->
-		<swiper-image @handleclickimg="handleclickimg" :swipers="swipers" />
-		<!-- 首页分类 -->
-		<index-nav @handleclickicon="handleclickicon" :icons="icons" />
-		<!-- 全局分割线 -->
-		<divider></divider>
-		<!-- 广告 -->
-		<three-adv @handleclickad="handleclickad" :threeadv="threeadv" />
-		<!-- 全局分割线 -->
-		<divider />
-		<!-- 基础卡片 -->
-		<card>
-			<block slot="title">每日精选</block>
-			<image src="../../static/images/bg.jpg" mode="widthFix"></image>
-		</card>
-		<!-- 公共列表组件 -->
-		<view class="row j-sb">
-			<block v-for="item of commonList" :key="item.id">
-				<common-list :obj="item"></common-list>
-			</block>
-		</view>
+	<view class="uni-tab-bar">
+		<scroll-view id="tab-bar" class="uni-swiper-tab" scroll-x :scroll-left="scrollLeft">
+			<view v-for="(tab, index) in tabBars" :key="tab.id" class="swiper-tab-list" :class="tabIndex == index ? 'active' : ''" :id="tab.id" :data-current="index" @click="tapTab">
+				{{ tab.name }}
+			</view>
+		</scroll-view>
+		<swiper :current="tabIndex" class="swiper-box" :duration="300" @change="changeTab">
+			<swiper-item v-for="(tab, index1) in newsitems" :key="index1">
+				<scroll-view class="list" scroll-y @scrolltolower="loadMore(index1)">
+					<block v-for="(newsitem, index2) in tab.data" :key="index2">
+						<media-list :options="newsitem" @close="close(index1, index2)" @click="goDetail(newsitem)"></media-list>
+					</block>
+					<view class="uni-tab-bar-loading">{{ tab.loadingText }}</view>
+				</scroll-view>
+			</swiper-item>
+		</swiper>
 	</view>
 </template>
-
 <script>
-import swiperImage from '../../components/index/swiper-image.vue';
-import indexNav from '../../components/index/index-nav.vue';
-import divider from '../../components/common/divider.vue';
-import threeAdv from '../../components/index/three-adv.vue';
-import card from '../../components/common/card.vue';
-import commonList from '../../components/common/common-list.vue'
+import mediaList from '@/components/mediaList.vue';
+
+const tpl = {
+	data0: {
+		datetime: '40分钟前',
+		article_type: 0,
+		title: 'uni-app行业峰会频频亮相，开发者反响热烈!',
+		source: 'DCloud',
+		comment_count: 639
+	},
+	data1: {
+		datetime: '一天前',
+		article_type: 1,
+		title: 'DCloud完成B2轮融资，uni-app震撼发布!',
+		image_url: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg?imageView2/3/w/200/h/100/q/90',
+		source: 'DCloud',
+		comment_count: 11395
+	},
+	data2: {
+		datetime: '一天前',
+		article_type: 2,
+		title: '中国技术界小奇迹：HBuilder开发者突破200万',
+		image_url: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/muwu.jpg?imageView2/3/w/200/h/100/q/90',
+		source: 'DCloud',
+		comment_count: 11395
+	},
+	data3: {
+		article_type: 3,
+		image_list: [
+			{
+				url: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/cbd.jpg?imageView2/3/w/200/h/100/q/90',
+				width: 563,
+				height: 316
+			},
+			{
+				url: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/muwu.jpg?imageView2/3/w/200/h/100/q/90',
+				width: 641,
+				height: 360
+			},
+			{
+				url: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg?imageView2/3/w/200/h/100/q/90',
+				width: 640,
+				height: 360
+			}
+		],
+		datetime: '5分钟前',
+		title: 'uni-app 支持使用 npm 安装第三方包，生态更趋丰富',
+		source: 'DCloud',
+		comment_count: 11
+	},
+	data4: {
+		datetime: '2小时前',
+		article_type: 4,
+		title: 'uni-app 支持原生小程序自定义组件，更开放、更自由',
+		image_url: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/cbd.jpg?imageView2/3/w/200/h/100/q/90',
+		source: 'DCloud',
+		comment_count: 69
+	}
+};
+
 export default {
 	components: {
-		swiperImage,
-		indexNav,
-		threeAdv,
-		divider,
-		card,
-		commonList
+		mediaList
 	},
 	data() {
 		return {
-			swipers: [{ id: 1, src: '../../static/images/demo/demo4.jpg' }, { id: 2, src: '../../static/images/demo/demo4.jpg' }, { id: 3, src: '../../static/images/demo/demo4.jpg' }],
-			icons: [
-				{ id: 1, src: '../../static/indexnav/1.png', text: '新品发布' },
-				{ id: 2, src: '../../static/indexnav/2.gif', text: '小品众筹' },
-				{ id: 3, src: '../../static/indexnav/3.gif', text: '以旧换新' },
-				{ id: 4, src: '../../static/indexnav/4.gif', text: '一分换图' },
-				{ id: 5, src: '../../static/indexnav/5.gif', text: '超值特卖' },
-				{ id: 6, src: '../../static/indexnav/6.gif', text: '小米秒卡' },
-				{ id: 7, src: '../../static/indexnav/7.gif', text: '真心想要' },
-				{ id: 8, src: '../../static/indexnav/8.gif', text: '电视热卖' },
-				{ id: 9, src: '../../static/indexnav/9.gif', text: '家电热卖' },
-				{ id: 10, src: '../../static/indexnav/10.gif', text: '米粉卡' }
-			],
-			threeadv: {
-				big: { src: '../../static/images/demo/demo1.jpg' },
-				smalltop: { src: '../../static/images/demo/demo2.jpg' },
-				smallbottom: { src: '../../static/images/demo/demo2.jpg' }
-			},
-			bodyCover: '../../static/images/demo/demo4.jpg',
-			commonList: [
-				{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调1', desc: '1.5匹变频', oprice: 2699, pprice: 1399, id: 1 },
-				{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调2', desc: '1.5匹变频', oprice: 2698, pprice: 1398, id: 2 },
-				{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调3', desc: '1.6匹变频', oprice: 2697, pprice: 1397, id: 3 },
-				{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.7匹变频', oprice: 2696, pprice: 1396, id: 4 },
-				{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 5 },
+			scrollLeft: 0,
+			isClickChange: false,
+			tabIndex: 0,
+			newsitems: [],
+			tabBars: [
+				{
+					name: '关注',
+					id: 'guanzhu'
+				},
+				{
+					name: '推荐',
+					id: 'tuijian'
+				},
+				{
+					name: '体育',
+					id: 'tiyu'
+				},
+				{
+					name: '热点',
+					id: 'redian'
+				},
+				{
+					name: '财经',
+					id: 'caijing'
+				},
+				{
+					name: '娱乐',
+					id: 'yule'
+				},
+				{
+					name: '军事',
+					id: 'junshi'
+				},
+				{
+					name: '历史',
+					id: 'lishi'
+				},
+				{
+					name: '本地',
+					id: 'bendi'
+				}
 			]
 		};
 	},
+	onLoad() {
+		this.newsitems = this.randomfn();
+	},
 	methods: {
-		handleclickimg(obj) {
-			console.log(obj);
+		goDetail(e) {
+			uni.navigateTo({
+				url: '/pages/template/tabbar/detail/detail?title=' + e.title
+			});
 		},
-		handleclickicon(obj) {
-			console.log(obj);
+		close(index1, index2) {
+			uni.showModal({
+				content: '是否删除本条信息？',
+				success: res => {
+					if (res.confirm) {
+						this.newsitems[index1].data.splice(index2, 1);
+					}
+				}
+			});
 		},
-		handleclickad(obj) {
-			console.log(obj);
+		loadMore(e) {
+			setTimeout(() => {
+				this.addData(e);
+			}, 1200);
+		},
+		addData(e) {
+			if (this.newsitems[e].data.length > 30) {
+				this.newsitems[e].loadingText = '没有更多了';
+				return;
+			}
+			for (let i = 1; i <= 10; i++) {
+				this.newsitems[e].data.push(tpl['data' + Math.floor(Math.random() * 5)]);
+			}
+		},
+		async changeTab(e) {
+			let index = e.target.current;
+			if (this.newsitems[index].data.length === 0) {
+				this.addData(index);
+			}
+			if (this.isClickChange) {
+				this.tabIndex = index;
+				this.isClickChange = false;
+				return;
+			}
+			let tabBar = await this.getElSize('tab-bar'),
+				tabBarScrollLeft = tabBar.scrollLeft;
+			let width = 0;
+
+			for (let i = 0; i < index; i++) {
+				let result = await this.getElSize(this.tabBars[i].id);
+				width += result.width;
+			}
+			let winWidth = uni.getSystemInfoSync().windowWidth,
+				nowElement = await this.getElSize(this.tabBars[index].id),
+				nowWidth = nowElement.width;
+			if (width + nowWidth - tabBarScrollLeft > winWidth) {
+				this.scrollLeft = width + nowWidth - winWidth;
+			}
+			if (width < tabBarScrollLeft) {
+				this.scrollLeft = width;
+			}
+			this.isClickChange = false;
+			this.tabIndex = index; //一旦访问data就会出问题
+		},
+		getElSize(id) {
+			//得到元素的size
+			return new Promise((res, rej) => {
+				uni
+					.createSelectorQuery()
+					.select('#' + id)
+					.fields(
+						{
+							size: true,
+							scrollOffset: true
+						},
+						data => {
+							res(data);
+						}
+					)
+					.exec();
+			});
+		},
+		async tapTab(e) {
+			//点击tab-bar
+			let tabIndex = e.target.dataset.current;
+			if (this.newsitems[tabIndex].data.length === 0) {
+				this.addData(tabIndex);
+			}
+			if (this.tabIndex === tabIndex) {
+				return false;
+			} else {
+				let tabBar = await this.getElSize('tab-bar'),
+					tabBarScrollLeft = tabBar.scrollLeft; //点击的时候记录并设置scrollLeft
+				this.scrollLeft = tabBarScrollLeft;
+				this.isClickChange = true;
+				this.tabIndex = tabIndex;
+			}
+		},
+		randomfn() {
+			let ary = [];
+			for (let i = 0, length = this.tabBars.length; i < length; i++) {
+				let aryItem = {
+					loadingText: '加载更多...',
+					data: []
+				};
+				if (i < 1) {
+					for (let j = 1; j <= 10; j++) {
+						aryItem.data.push(tpl['data' + Math.floor(Math.random() * 5)]);
+					}
+				}
+				ary.push(aryItem);
+			}
+			return ary;
 		}
 	}
 };
 </script>
+
+<style>
+.uni-tab-bar-loading {
+	text-align: center;
+	font-size: 28upx;
+	color: #999;
+}
+</style>
