@@ -1,1 +1,2 @@
+setCssToHead([".",[1],"tabitems.",[1],"data-v-6a0b5e09 { display: inline-block; width: ",[0,75],"; border-bottom: ",[0,5]," solid #fff; }\n.",[1],"active .",[1],"tabitems.",[1],"data-v-6a0b5e09 { border-bottom: ",[0,5]," solid #fd6801; }\n.",[1],"uni-tab-bar-loading.",[1],"data-v-6a0b5e09 { text-align: center; font-size: ",[0,28],"; color: #999; }\n",],undefined,{path:"./pages/index/index.wxss"})();
 document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/index/index.wxml') } }));

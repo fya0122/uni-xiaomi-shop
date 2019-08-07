@@ -1,16 +1,55 @@
 <template>
 	<view class="uni-tab-bar">
+		<!-- 顶部导航 -->
 		<scroll-view id="tab-bar" class="uni-swiper-tab" scroll-x :scroll-left="scrollLeft">
 			<view v-for="(tab, index) in tabBars" :key="tab.id" class="swiper-tab-list" :class="tabIndex == index ? 'active' : ''" :id="tab.id" :data-current="index" @click="tapTab">
-				{{ tab.name }}
+				<view class="tabitems">{{ tab.name }}</view>
 			</view>
 		</scroll-view>
+		<!-- 根据顶部变化的下面 -->
 		<swiper :current="tabIndex" class="swiper-box" :duration="300" @change="changeTab">
 			<swiper-item v-for="(tab, index1) in newsitems" :key="index1">
 				<scroll-view class="list" scroll-y @scrolltolower="loadMore(index1)">
-					<block v-for="(newsitem, index2) in tab.data" :key="index2">
-						<media-list :options="newsitem" @close="close(index1, index2)" @click="goDetail(newsitem)"></media-list>
-					</block>
+					<!-- index的模板 -->
+					<template v-if="tabBars[index1].template === 'index'">
+						<block v-for="(v, i) in tab.data" :key="i">
+							<template v-if="v.type === 'swiper'">
+								<!-- 轮播图组件 -->
+								<swiper-image @handleclickimg="handleclickimg" :swipers="v.data" />
+							</template>
+							<template v-else-if="v.type === 'indexnavs'">
+								<!-- 首页分类 -->
+								<index-nav @handleclickicon="handleclickicon" :icons="v.data" />
+								<!-- 全局分割线 -->
+								<divider></divider>
+							</template>
+							<template v-else-if="v.type === 'threeAdv'">
+								<!-- 广告 -->
+								<three-adv @handleclickad="handleclickad" :threeadv="v.data" />
+								<!-- 全局分割线 -->
+								<divider />
+							</template>
+							<template v-else-if="v.type === 'oneAdv'">
+								<!-- 基础卡片 -->
+								<card>
+									<block slot="title">{{ v.data.title }}</block>
+									<image :src="v.data.cover" mode="widthFix"></image>
+								</card>
+							</template>
+							<template v-else-if="v.type === 'list'">
+								<!-- 公共列表组件 -->
+								<view class="row j-sb">
+									<block v-for="(vlist, index) of v.data" :key="index"><common-list :obj="vlist"></common-list></block>
+								</view>
+							</template>
+						</block>
+					</template>
+					<!-- special的模板 -->
+					<template v-if="tabBars[index1].template === 'special'">
+						<view>专题页模板</view>
+					</template>
+
+					<!-- 加载更多 -->
 					<view class="uni-tab-bar-loading">{{ tab.loadingText }}</view>
 				</scroll-view>
 			</swiper-item>
@@ -18,113 +57,47 @@
 	</view>
 </template>
 <script>
-import mediaList from '@/components/mediaList.vue';
-
-const tpl = {
-	data0: {
-		datetime: '40分钟前',
-		article_type: 0,
-		title: 'uni-app行业峰会频频亮相，开发者反响热烈!',
-		source: 'DCloud',
-		comment_count: 639
-	},
-	data1: {
-		datetime: '一天前',
-		article_type: 1,
-		title: 'DCloud完成B2轮融资，uni-app震撼发布!',
-		image_url: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg?imageView2/3/w/200/h/100/q/90',
-		source: 'DCloud',
-		comment_count: 11395
-	},
-	data2: {
-		datetime: '一天前',
-		article_type: 2,
-		title: '中国技术界小奇迹：HBuilder开发者突破200万',
-		image_url: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/muwu.jpg?imageView2/3/w/200/h/100/q/90',
-		source: 'DCloud',
-		comment_count: 11395
-	},
-	data3: {
-		article_type: 3,
-		image_list: [
-			{
-				url: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/cbd.jpg?imageView2/3/w/200/h/100/q/90',
-				width: 563,
-				height: 316
-			},
-			{
-				url: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/muwu.jpg?imageView2/3/w/200/h/100/q/90',
-				width: 641,
-				height: 360
-			},
-			{
-				url: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg?imageView2/3/w/200/h/100/q/90',
-				width: 640,
-				height: 360
-			}
-		],
-		datetime: '5分钟前',
-		title: 'uni-app 支持使用 npm 安装第三方包，生态更趋丰富',
-		source: 'DCloud',
-		comment_count: 11
-	},
-	data4: {
-		datetime: '2小时前',
-		article_type: 4,
-		title: 'uni-app 支持原生小程序自定义组件，更开放、更自由',
-		image_url: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/cbd.jpg?imageView2/3/w/200/h/100/q/90',
-		source: 'DCloud',
-		comment_count: 69
-	}
-};
-
+import swiperImage from '../../components/index/swiper-image.vue';
+import indexNav from '../../components/index/index-nav.vue';
+import divider from '../../components/common/divider.vue';
+import threeAdv from '../../components/index/three-adv.vue';
+import card from '../../components/common/card.vue';
+import commonList from '../../components/common/common-list.vue';
 export default {
 	components: {
-		mediaList
+		swiperImage,
+		indexNav,
+		threeAdv,
+		divider,
+		card,
+		commonList
 	},
 	data() {
 		return {
 			scrollLeft: 0,
 			isClickChange: false,
 			tabIndex: 0,
-			newsitems: [],
+			newsitems: [
+				{ loadingText: '加载更多...', data: [] },
+				{ loadingText: '加载更多...', data: [] },
+				{ loadingText: '加载更多...', data: [] },
+				{ loadingText: '加载更多...', data: [] },
+				{ loadingText: '加载更多...', data: [] },
+				{ loadingText: '加载更多...', data: [] },
+				{ loadingText: '加载更多...', data: [] },
+				{ loadingText: '加载更多...', data: [] },
+				{ loadingText: '加载更多...', data: [] }
+			],
 			tabBars: [
-				{
-					name: '关注',
-					id: 'guanzhu'
-				},
-				{
-					name: '推荐',
-					id: 'tuijian'
-				},
-				{
-					name: '体育',
-					id: 'tiyu'
-				},
-				{
-					name: '热点',
-					id: 'redian'
-				},
-				{
-					name: '财经',
-					id: 'caijing'
-				},
-				{
-					name: '娱乐',
-					id: 'yule'
-				},
-				{
-					name: '军事',
-					id: 'junshi'
-				},
-				{
-					name: '历史',
-					id: 'lishi'
-				},
-				{
-					name: '本地',
-					id: 'bendi'
-				}
+				{ name: '关注', id: 'guanzhu', template: 'index' },
+				{ name: '推荐', id: 'tuijian', template: 'special' },
+				{ name: '体育', id: 'tiyu', template: 'special' },
+				{ name: '热点', id: 'redian', template: 'special' },
+				{ name: '财经', id: 'caijing', template: 'special' },
+				{ name: '娱乐', id: 'yule', template: 'special' },
+				{ name: '军事', id: 'junshi', template: 'special' },
+				{ name: '历史', id: 'lishi', template: 'special' },
+				{ name: '本地', id: 'bendi', template: 'special' }
 			]
 		};
 	},
@@ -132,26 +105,13 @@ export default {
 		this.newsitems = this.randomfn();
 	},
 	methods: {
-		goDetail(e) {
-			uni.navigateTo({
-				url: '/pages/template/tabbar/detail/detail?title=' + e.title
-			});
-		},
-		close(index1, index2) {
-			uni.showModal({
-				content: '是否删除本条信息？',
-				success: res => {
-					if (res.confirm) {
-						this.newsitems[index1].data.splice(index2, 1);
-					}
-				}
-			});
-		},
+		// 加载更多
 		loadMore(e) {
 			setTimeout(() => {
 				this.addData(e);
 			}, 1200);
 		},
+		// 加载更多模拟数据
 		addData(e) {
 			if (this.newsitems[e].data.length > 30) {
 				this.newsitems[e].loadingText = '没有更多了';
@@ -161,6 +121,7 @@ export default {
 				this.newsitems[e].data.push(tpl['data' + Math.floor(Math.random() * 5)]);
 			}
 		},
+		// 异步的改变tab
 		async changeTab(e) {
 			let index = e.target.current;
 			if (this.newsitems[index].data.length === 0) {
@@ -209,6 +170,7 @@ export default {
 					.exec();
 			});
 		},
+		// 点击tabbar的
 		async tapTab(e) {
 			//点击tab-bar
 			let tabIndex = e.target.dataset.current;
@@ -225,17 +187,71 @@ export default {
 				this.tabIndex = tabIndex;
 			}
 		},
+		// 生成随机数据
 		randomfn() {
 			let ary = [];
-			for (let i = 0, length = this.tabBars.length; i < length; i++) {
+			const tabBarsLength = this.tabBars.length;
+			for (let i = 0; i < tabBarsLength; i++) {
 				let aryItem = {
 					loadingText: '加载更多...',
 					data: []
 				};
-				if (i < 1) {
-					for (let j = 1; j <= 10; j++) {
-						aryItem.data.push(tpl['data' + Math.floor(Math.random() * 5)]);
-					}
+				if (this.tabBars[i].template === 'index') {
+					aryItem.data = [
+						// 轮播图
+						{
+							type: 'swiper',
+							data: [
+								{ id: 1, src: '../../static/images/demo/demo4.jpg' },
+								{ id: 2, src: '../../static/images/demo/demo4.jpg' },
+								{ id: 3, src: '../../static/images/demo/demo4.jpg' }
+							]
+						},
+						// icons
+						{
+							type: 'indexnavs',
+							data: [
+								{ id: 1, src: '../../static/indexnav/1.png', text: '新品发布' },
+								{ id: 2, src: '../../static/indexnav/2.gif', text: '小品众筹' },
+								{ id: 3, src: '../../static/indexnav/3.gif', text: '以旧换新' },
+								{ id: 4, src: '../../static/indexnav/4.gif', text: '一分换图' },
+								{ id: 5, src: '../../static/indexnav/5.gif', text: '超值特卖' },
+								{ id: 6, src: '../../static/indexnav/6.gif', text: '小米秒卡' },
+								{ id: 7, src: '../../static/indexnav/7.gif', text: '真心想要' },
+								{ id: 8, src: '../../static/indexnav/8.gif', text: '电视热卖' },
+								{ id: 9, src: '../../static/indexnav/9.gif', text: '家电热卖' },
+								{ id: 10, src: '../../static/indexnav/10.gif', text: '米粉卡' }
+							]
+						},
+						// 三个图的广告
+						{
+							type: 'threeAdv',
+							data: {
+								big: { src: '../../static/images/demo/demo1.jpg' },
+								smalltop: { src: '../../static/images/demo/demo2.jpg' },
+								smallbottom: { src: '../../static/images/demo/demo2.jpg' }
+							}
+						},
+						// 大图广告
+						{
+							type: 'oneAdv',
+							data: {
+								title: '每日精选',
+								cover: '../../static/images/demo/demo4.jpg'
+							}
+						},
+						// 列表
+						{
+							type: 'list',
+							data: [
+								{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调1', desc: '1.5匹变频', oprice: 2699, pprice: 1399, id: 1 },
+								{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调2', desc: '1.5匹变频', oprice: 2698, pprice: 1398, id: 2 },
+								{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调3', desc: '1.6匹变频', oprice: 2697, pprice: 1397, id: 3 },
+								{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.7匹变频', oprice: 2696, pprice: 1396, id: 4 },
+								{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 5 }
+							]
+						}
+					];
 				}
 				ary.push(aryItem);
 			}
@@ -245,7 +261,15 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.tabitems {
+	display: inline-block;
+	width: 75upx;
+	border-bottom: 5upx solid #fff;
+}
+.active .tabitems {
+	border-bottom: 5upx solid #fd6801;
+}
 .uni-tab-bar-loading {
 	text-align: center;
 	font-size: 28upx;

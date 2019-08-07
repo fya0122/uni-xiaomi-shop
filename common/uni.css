@@ -865,7 +865,7 @@ radio-group label, checkbox-group label{
 	text-align: center;
 	color: #555;
 	/* new，新增border-bottom以后，height变高了 */
-	border-bottom: 5upx solid #fff;
+	/* border-bottom: 5upx solid #fff; */
 }
 
 .uni-tab-bar .active {
@@ -874,7 +874,7 @@ radio-group label, checkbox-group label{
 	/* new */
 	color: #fd6801;
 	/* new */
-	border-bottom: 5upx solid #fd6801;
+	/* border-bottom: 5upx solid #fd6801; */
 }
 
 .uni-tab-bar .swiper-box {
