@@ -2,7 +2,15 @@
 	<view class="uni-tab-bar">
 		<!-- 顶部导航 -->
 		<scroll-view id="tab-bar" class="uni-swiper-tab" scroll-x :scroll-left="scrollLeft">
-			<view v-for="(tab, index) in tabBars" :key="tab.id" class="swiper-tab-list" :class="tabIndex == index ? 'active' : ''" :id="tab.id" :data-current="index" @click="tapTab">
+			<view
+				v-for="(tab, index) in tabBars"
+				:key="tab.id"
+				class="swiper-tab-list"
+				:class="tabIndex == index ? 'active' : ''"
+				:id="tab.id"
+				:data-current="index"
+				@click="tapTab(index)"
+			>
 				<view class="tabitems">{{ tab.name }}</view>
 			</view>
 		</scroll-view>
@@ -46,7 +54,26 @@
 					</template>
 					<!-- special的模板 -->
 					<template v-if="tabBars[index1].template === 'special'">
-						<view>专题页模板</view>
+						<block v-for="(v, i) in tab.data" :key="i">
+							<template v-if="v.type === 'swiper'">
+								<!-- 轮播图组件 -->
+								<swiper-image @handleclickimg="handleclickimg" :swipers="v.data" />
+							</template>
+							<template v-else-if="v.type === 'indexnavs'">
+								<!-- 首页分类 -->
+								<index-nav @handleclickicon="handleclickicon" :icons="v.data" />
+								<!-- 全局分割线 -->
+								<divider></divider>
+							</template>
+							<template v-else-if="v.type === 'list'">
+								<card headTitle="热卖爆品">
+									<!-- 公共列表组件 -->
+									<view class="row j-sb">
+										<block v-for="(vlist, index) of v.data" :key="index"><common-list :obj="vlist"></common-list></block>
+									</view>
+								</card>
+							</template>
+						</block>
 					</template>
 
 					<!-- 加载更多 -->
@@ -117,9 +144,39 @@ export default {
 				this.newsitems[e].loadingText = '没有更多了';
 				return;
 			}
-			for (let i = 1; i <= 10; i++) {
-				this.newsitems[e].data.push(tpl['data' + Math.floor(Math.random() * 5)]);
-			}
+			// this.newsitems[e].data.push(tpl['data' + Math.floor(Math.random() * 5)]);
+			let arr = [
+				// 轮播图
+				{
+					type: 'swiper',
+					data: [{ id: 1, src: '../../static/images/demo/demo4.jpg' }, { id: 2, src: '../../static/images/demo/demo4.jpg' }, { id: 3, src: '../../static/images/demo/demo4.jpg' }]
+				},
+				// icons
+				{
+					type: 'indexnavs',
+					data: [
+						{ id: 1, src: '../../static/indexnav/1.png', text: '新品发布' },
+						{ id: 2, src: '../../static/indexnav/2.gif', text: '小品众筹' },
+						{ id: 3, src: '../../static/indexnav/3.gif', text: '以旧换新' },
+						{ id: 4, src: '../../static/indexnav/4.gif', text: '一分换图' },
+						{ id: 5, src: '../../static/indexnav/5.gif', text: '超值特卖' }
+					]
+				},
+				// 列表
+				{
+					type: 'list',
+					data: [
+						{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调1', desc: '1.5匹变频', oprice: 2699, pprice: 1399, id: 1 },
+						{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调2', desc: '1.5匹变频', oprice: 2698, pprice: 1398, id: 2 },
+						{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调3', desc: '1.6匹变频', oprice: 2697, pprice: 1397, id: 3 },
+						{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.7匹变频', oprice: 2696, pprice: 1396, id: 4 },
+						{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 5 }
+					]
+				}
+			];
+
+			this.newsitems[e].data = [...this.newsitems[e].data, ...arr]; // 算是合并吧
+			console.log(this.newsitems[e].data);
 		},
 		// 异步的改变tab
 		async changeTab(e) {
@@ -173,7 +230,9 @@ export default {
 		// 点击tabbar的
 		async tapTab(e) {
 			//点击tab-bar
-			let tabIndex = e.target.dataset.current;
+			// let tabIndex = e.target.dataset.current;
+			// new，点击的索引
+			let tabIndex = e;
 			if (this.newsitems[tabIndex].data.length === 0) {
 				this.addData(tabIndex);
 			}
