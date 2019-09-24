@@ -1,0 +1,45 @@
+<template>
+  <div>
+    <!-- 轮播图组件 -->
+    <sum-slider :swipers="swipers"></sum-slider>
+    <!-- 图标分类组件 -->
+    <index-nav :indexNavs="indexNavs"></index-nav>
+    <!-- 全局分割线 -->
+    <divider/>
+  </div>
+</template>
+
+<script>
+import SumSlider from '../../components/index/nvue/sum-slider.nvue'
+import IndexNav from '../../components/index/nvue/index-nav.nvue'
+import Divider from '../../components/common/divider.nvue'
+export default {
+  components: {
+    SumSlider,
+    IndexNav,
+    Divider
+  },
+  data() {
+    return {
+      swipers: [
+        { src: '../../static/images/demo/demo4.jpg' },
+        { src: '../../static/images/demo/demo4.jpg' },
+        { src: '../../static/images/demo/demo4.jpg' },
+      ],
+      indexNavs: [
+        { src: '../../static/indexnav/1.png', name: '新品分类' },
+        { src: '../../static/indexnav/2.gif', name: '小米众筹' },
+        { src: '../../static/indexnav/3.gif', name: '以旧换新' },
+        { src: '../../static/indexnav/4.gif', name: '1分拼团' },
+        { src: '../../static/indexnav/5.gif', name: '超值特卖' },
+        { src: '../../static/indexnav/6.gif', name: '小米秒杀' },
+        { src: '../../static/indexnav/7.gif', name: '真心想要' },
+        { src: '../../static/indexnav/8.gif', name: '电视热卖' },
+        { src: '../../static/indexnav/9.gif', name: '家电热卖' },
+        { src: '../../static/indexnav/10.gif', name: '米粉卡' },
+      ]
+    }
+  }
+}
+</script>
+<style src="@/common/zcm-main-nvue.css"></style>

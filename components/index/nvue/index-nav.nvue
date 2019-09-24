@@ -1,0 +1,26 @@
+<template>
+<div class="w-100 row mb-3">
+  <div class="j-center a-center mt-3 index-nav" v-for="(item, index) in indexNavs" :key="index">
+    <image class="index-nav-image" :src="item.src"></image>
+    <text class="font text-muted mt-1">{{ item.name }}</text>
+  </div>
+</div>
+</template>
+
+<script>
+export default {
+  props: {
+    indexNavs: Array
+  }
+}
+</script>
+<style src="@/common/zcm-main-nvue.css"></style>
+<style scoped>
+.index-nav {
+  width: 150px;
+}
+.index-nav-image {
+  width: 58px;
+  height: 58px;
+}
+</style>
