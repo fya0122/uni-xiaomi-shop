@@ -1,34 +1,30 @@
 <template>
-  <div>
-    <!-- 轮播图组件 -->
-    <sum-slider :swipers="swipers"></sum-slider>
-    <!-- 图标分类组件 -->
-    <index-nav :indexNavs="indexNavs"></index-nav>
-    <!-- 全局分割线组件 -->
-    <divider/>
-    <!-- 三图广告组件 -->
-    <div class="w-100 row">
-      <div class="col-6">
-        <image src="../../static/images/demo/demo1.jpg"></image>
-      </div>
-      <div class="col-6">
-        <image src="../../static/images/demo/demo2.jpg"></image>
-        <image src="../../static/images/demo/demo3.jpg"></image>
-      </div>
-    </div>
-  </div>
+  <list :show-scrollbar="false">
+    <cell>
+      <!-- 轮播图组件 -->
+      <sum-slider :swipers="swipers"></sum-slider>
+      <!-- 图标分类组件 -->
+      <sum-index-navs :indexNavs="indexNavs"></sum-index-navs>
+      <!-- 全局分割线组件 -->
+      <divider/>
+      <!-- 三图广告组件 -->
+      <sum-three-adv/>
+    </cell>
+  </list>
 </template>
 
 <script>
 const currentWebview = plus.webview.currentWebview()
 import SumSlider from '../../components/index/nvue/sum-slider.nvue'
-import IndexNav from '../../components/index/nvue/index-nav.nvue'
+import SumIndexNavs from '../../components/index/nvue/sum-index-navs.nvue'
 import Divider from '../../components/common/divider.nvue'
+import SumThreeAdv from '../../components/index/nvue/sum-three-adv.nvue'
 export default {
   components: {
     SumSlider,
-    IndexNav,
-    Divider
+    SumIndexNavs,
+    Divider,
+    SumThreeAdv
   },
   data() {
     return {
@@ -68,4 +64,3 @@ export default {
   }
 }
 </script>
-<style src="@/common/zcm-main-nvue.css"></style>

@@ -1,0 +1,12 @@
+<template>
+  <div class="w-100 row">
+    <div class="col-6">
+      <image style="width: 373px;height: 530px;" src="../../static/images/demo/demo1.jpg"></image>
+    </div>
+    <div class="col-6 j-sb">
+      <image style="width: 375px;height: 263px;" src="../../static/images/demo/demo2.jpg"></image>
+      <image style="width: 375px;height: 263px;" src="../../static/images/demo/demo3.jpg"></image>
+    </div>
+  </div>
+</template>
+<style src="@/common/zcm-main-nvue.css"></style>
