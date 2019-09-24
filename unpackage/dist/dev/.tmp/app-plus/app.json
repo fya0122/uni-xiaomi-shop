@@ -63,7 +63,7 @@
                 "colorPressed": "#fd6801",
                 "float": "left",
                 "fontSize": "22px",
-                "fontSrc": "static/font/iconfont.ttf",
+                "fontSrc": "/static/font/iconfont.ttf",
                 "text": ""
               },
               {
@@ -71,7 +71,7 @@
                 "colorPressed": "#fd6801",
                 "float": "right",
                 "fontSize": "22px",
-                "fontSrc": "static/font/iconfont.ttf",
+                "fontSrc": "/static/font/iconfont.ttf",
                 "text": ""
               }
             ]

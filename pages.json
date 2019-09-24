@@ -18,14 +18,14 @@
 						"colorPressed": "#fd6801",
 						"float": "left",
 						"fontSize": "22px",
-						"fontSrc": "static/font/iconfont.ttf",
+						"fontSrc": "/static/font/iconfont.ttf",
 						"text": "\ue67a"
 					}, {
 						"color": "#989898",
 						"colorPressed": "#fd6801",
 						"float": "right",
 						"fontSize": "22px",
-						"fontSrc": "static/font/iconfont.ttf",
+						"fontSrc": "/static/font/iconfont.ttf",
 						"text": "\ue661"
 					}]
 				}

@@ -4,12 +4,23 @@
     <sum-slider :swipers="swipers"></sum-slider>
     <!-- 图标分类组件 -->
     <index-nav :indexNavs="indexNavs"></index-nav>
-    <!-- 全局分割线 -->
+    <!-- 全局分割线组件 -->
     <divider/>
+    <!-- 三图广告组件 -->
+    <div class="w-100 row">
+      <div class="col-6">
+        <image src="../../static/images/demo/demo1.jpg"></image>
+      </div>
+      <div class="col-6">
+        <image src="../../static/images/demo/demo2.jpg"></image>
+        <image src="../../static/images/demo/demo3.jpg"></image>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+const currentWebview = plus.webview.currentWebview()
 import SumSlider from '../../components/index/nvue/sum-slider.nvue'
 import IndexNav from '../../components/index/nvue/index-nav.nvue'
 import Divider from '../../components/common/divider.nvue'
@@ -39,6 +50,21 @@ export default {
         { src: '../../static/indexnav/10.gif', name: '米粉卡' },
       ]
     }
+  },
+  created() {
+    /**
+     * nvue里面没有onshwo生命周期，所以下面的onShow的模拟
+     * */
+    // const currentWebview = plus.webview.currentWebview()
+    currentWebview.addEventListener('show', () => {
+      console.log('onshow添加成功')
+    })
+  },
+  beforeDestroy() {
+    // const currentWebview = plus.webview.currentWebview()
+    currentWebview.removeEventListener('show', () => {
+      console.log('onshow移除成功')
+    })
   }
 }
 </script>
