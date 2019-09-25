@@ -1,5 +1,6 @@
 <template>
-  <list :show-scrollbar="false">
+  <!-- :show-scrollbar="false", 默认为true, 如果设置false, 则不显示右侧滚动条 -->
+  <list>
     <cell>
       <!-- 轮播图组件 -->
       <sum-slider :swipers="swipers"></sum-slider>
@@ -8,11 +9,25 @@
       <!-- 全局分割线组件 -->
       <divider/>
       <!-- 三图广告组件 -->
-      <sum-three-adv/>
+      <sum-three-adv :threeAdv="threeAdv"></sum-three-adv>
       <!-- 全局分割线组件 -->
       <divider/>
       <!-- 大图广告 -->
-      <sum-one-adv></sum-one-adv>
+      <sum-one-adv :oneAdv="oneAdv"></sum-one-adv>
+      <!-- 公共列表组件 -->
+      <div class="row w-100">
+        <block v-for="item of list" :key="item.id">
+          <div style="padding-left: 2.5px;padding-right: 2.5px;" class="col-6">
+            <image style="width: 370px;height: 370px;" :src="item.cover"></image>
+            <text class="font-md text-dark px-2 py-1" style="lines: 1;">{{ item.title }}</text>
+            <text class="px-2 font text-light-muted" style="lines: 1;">{{ item.desc }}</text>
+            <div class="px-2 pt-1 row">
+              <price>{{ item.oprice }}</price>
+              <text class="line-through text-light-muted ml-1" style="align-self: flex-end;font-size: 20px;">{{ item.pprice }}</text>
+            </div>
+          </div>
+        </block>
+      </div>
     </cell>
   </list>
 </template>
@@ -24,20 +39,22 @@ import SumIndexNavs from '../../components/index/nvue/sum-index-navs.nvue'
 import Divider from '../../components/common/divider.nvue'
 import SumThreeAdv from '../../components/index/nvue/sum-three-adv.nvue'
 import SumOneAdv from '../../components/index/nvue/sum-one-adv.nvue'
+import Price from '../../components/common/price.nvue'
 export default {
   components: {
     SumSlider,
     SumIndexNavs,
     Divider,
     SumThreeAdv,
-    SumOneAdv
+    SumOneAdv,
+    Price
   },
   data() {
     return {
       swipers: [
         { src: '../../static/images/demo/demo4.jpg' },
         { src: '../../static/images/demo/demo4.jpg' },
-        { src: '../../static/images/demo/demo4.jpg' },
+        { src: '../../static/images/demo/demo4.jpg' }
       ],
       indexNavs: [
         { src: '../../static/indexnav/1.png', name: '新品分类' },
@@ -49,7 +66,20 @@ export default {
         { src: '../../static/indexnav/7.gif', name: '真心想要' },
         { src: '../../static/indexnav/8.gif', name: '电视热卖' },
         { src: '../../static/indexnav/9.gif', name: '家电热卖' },
-        { src: '../../static/indexnav/10.gif', name: '米粉卡' },
+        { src: '../../static/indexnav/10.gif', name: '米粉卡' }
+      ],
+      threeAdv: [
+        { src: '../../static/images/demo/demo1.jpg' },
+        { src: '../../static/images/demo/demo2.jpg' },
+        { src: '../../static/images/demo/demo3.jpg' }
+      ],
+      oneAdv: { cover: '../../static/images/demo/demo4.jpg', title: '每日精选' },
+      list: [
+        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调1', desc: '1.5匹变频', oprice: 2699, pprice: 1399, id: 1 },
+        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调2', desc: '1.5匹变频', oprice: 2698, pprice: 1398, id: 2 },
+        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调3', desc: '1.6匹变频', oprice: 2697, pprice: 1397, id: 3 },
+        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.7匹变频', oprice: 2696, pprice: 1396, id: 4 },
+        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 5 },
       ]
     }
   },
@@ -70,3 +100,4 @@ export default {
   }
 }
 </script>
+<style src="@/common/zcm-main-nvue.css"></style>
