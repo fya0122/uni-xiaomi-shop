@@ -9,6 +9,10 @@
       <divider/>
       <!-- 三图广告组件 -->
       <sum-three-adv/>
+      <!-- 全局分割线组件 -->
+      <divider/>
+      <!-- 大图广告 -->
+      <sum-one-adv></sum-one-adv>
     </cell>
   </list>
 </template>
@@ -19,12 +23,14 @@ import SumSlider from '../../components/index/nvue/sum-slider.nvue'
 import SumIndexNavs from '../../components/index/nvue/sum-index-navs.nvue'
 import Divider from '../../components/common/divider.nvue'
 import SumThreeAdv from '../../components/index/nvue/sum-three-adv.nvue'
+import SumOneAdv from '../../components/index/nvue/sum-one-adv.nvue'
 export default {
   components: {
     SumSlider,
     SumIndexNavs,
     Divider,
-    SumThreeAdv
+    SumThreeAdv,
+    SumOneAdv
   },
   data() {
     return {
