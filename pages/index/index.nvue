@@ -17,15 +17,7 @@
       <!-- 公共列表组件 -->
       <div class="row w-100">
         <block v-for="item of list" :key="item.id">
-          <div style="padding-left: 2.5px;padding-right: 2.5px;" class="col-6">
-            <image style="width: 370px;height: 370px;" :src="item.cover"></image>
-            <text class="font-md text-dark px-2 py-1" style="lines: 1;">{{ item.title }}</text>
-            <text class="px-2 font text-light-muted" style="lines: 1;">{{ item.desc }}</text>
-            <div class="px-2 pt-1 row">
-              <price>{{ item.oprice }}</price>
-              <text class="line-through text-light-muted ml-1" style="align-self: flex-end;font-size: 20px;">{{ item.pprice }}</text>
-            </div>
-          </div>
+          <common-list :item="item"></common-list>
         </block>
       </div>
     </cell>
@@ -39,7 +31,7 @@ import SumIndexNavs from '../../components/index/nvue/sum-index-navs.nvue'
 import Divider from '../../components/common/divider.nvue'
 import SumThreeAdv from '../../components/index/nvue/sum-three-adv.nvue'
 import SumOneAdv from '../../components/index/nvue/sum-one-adv.nvue'
-import Price from '../../components/common/price.nvue'
+import CommonList from '../../components/common/common-list.nvue'
 export default {
   components: {
     SumSlider,
@@ -47,7 +39,7 @@ export default {
     Divider,
     SumThreeAdv,
     SumOneAdv,
-    Price
+    CommonList
   },
   data() {
     return {
@@ -80,6 +72,7 @@ export default {
         { cover: '../../static/images/demo/list/1.jpg', title: '米家空调3', desc: '1.6匹变频', oprice: 2697, pprice: 1397, id: 3 },
         { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.7匹变频', oprice: 2696, pprice: 1396, id: 4 },
         { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 5 },
+        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 6 },
       ]
     }
   },
