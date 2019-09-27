@@ -1,12 +1,18 @@
 <template>
   <div>
-    <div class="w-100" style="height: 75px;background-color: #eee;">
+    <div class="w-100" style="height: 75px;">
       <scroller class="w-100 flex-row" style="height: 75px;" :show-scrollbar="false" scroll-direction="horizontal">
-        <div @click="clickScrollItem(index)" :key="item.id" v-for="(item, index) of tabBars" style="height: 75px;width: 120px;background-color: red;" class="a-center j-center">
+        <div @click="clickScrollItem(index)" :key="item.id" v-for="(item, index) of tabBars" style="height: 75px;width: 120px;" class="a-center j-center">
           <text :style="{'color': tabIndex === index ? '#FD6801' : '#555555', 'borderColor': tabIndex === index ? '#FD6801' : '#FFFFFF'}" class="font-md" style="height: 75px;line-height: 75px;border-bottom-width: 5px;border-style: solid;border-color: #FFFFFF;">{{ item.name }}</text>
         </div>
       </scroller>
     </div>
+    <!-- 横向滚动列表 -->
+    <slider @change="sliderChange" class="flex-1" :index="tabIndex" :infinite="false">
+      <div v-for="item of tabBars" :key="item.id">
+        <text class="font-lg">{{ item.name }}</text>
+      </div>
+    </slider>
   </div>
 </template>
 
@@ -31,6 +37,9 @@ export default {
   methods: {
     clickScrollItem(index) {
       this.tabIndex = index
+    },
+    sliderChange(e){
+      this.tabIndex = e.index
     }
   }
 }
