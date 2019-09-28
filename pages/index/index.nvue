@@ -2,7 +2,7 @@
   <div>
     <div class="w-100" style="height: 75px;">
       <scroller class="w-100 flex-row" style="height: 75px;" :show-scrollbar="false" scroll-direction="horizontal">
-        <div @click="clickScrollItem(index)" :key="item.id" v-for="(item, index) of tabBars" style="height: 75px;width: 120px;" class="a-center j-center">
+        <div :ref="`tab${index}`" @click="clickScrollItem(index)" :key="item.id" v-for="(item, index) of tabBars" style="height: 75px;width: 120px;" class="a-center j-center">
           <text :style="{'color': tabIndex === index ? '#FD6801' : '#555555', 'borderColor': tabIndex === index ? '#FD6801' : '#FFFFFF'}" class="font-md" style="height: 75px;line-height: 75px;border-bottom-width: 5px;border-style: solid;border-color: #FFFFFF;">{{ item.name }}</text>
         </div>
       </scroller>
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+const dom = weex.requireModule('dom')
 export default {
   data () {
     return {
@@ -34,12 +35,34 @@ export default {
 			]
     }
   },
+  watch: {
+    tabIndex(newVal, oldVal) {
+      this.myScrollerChange(newVal)
+    }
+  },
   methods: {
     clickScrollItem(index) {
       this.tabIndex = index
     },
     sliderChange(e){
       this.tabIndex = e.index
+    },
+    /* 这个是我自己定义的，如果按照老师那么走的话，是很吃性能的 */
+    async myScrollerChange(index) {
+      let el = this.$refs[`tab${index}`][0]
+      dom.getComponentRect(el, (res) => {
+        /* 处于右边 */
+        if (res.size.right > 750) {
+          // 下面的那个4很关键呢
+          let newE1 = this.$refs[`tab${index-5}`][0]
+          return dom.scrollToElement(newE1, {})
+        }
+        
+        /* 处于左边 */
+        if (res.size.left < 0) {
+          dom.scrollToElement(el, {})
+        }
+      })
     }
   }
 }
