@@ -9,18 +9,63 @@
     </div>
     <!-- 横向滚动列表 -->
     <slider @change="sliderChange" class="flex-1" :index="tabIndex" :infinite="false">
-      <div v-for="item of tabBars" :key="item.id">
-        <text class="font-lg">{{ item.name }}</text>
-      </div>
+      <!-- :show-scrollbar="false", 默认为true, 如果设置false, 则不显示右侧滚动条 -->
+      <list v-for="item of tabBars" :key="item.id">
+        <refresh class="w-100 flex-row j-center a-center" style="height: 80px;" @refresh="refresh" @pullingdown="pullingdown" :display="refreshShow">
+          <text class="font-md text-muted">{{ refreshText }}</text>
+        </refresh>
+        <cell>
+          <!-- 轮播图组件 -->
+          <sum-slider :swipers="swipers"></sum-slider>
+          <!-- 图标分类组件 -->
+          <sum-index-navs :indexNavs="indexNavs"></sum-index-navs>
+          <!-- 全局分割线组件 -->
+          <divider/>
+          <!-- 三图广告组件 -->
+          <sum-three-adv :threeAdv="threeAdv"></sum-three-adv>
+          <!-- 全局分割线组件 -->
+          <divider/>
+          <!-- 大图广告 -->
+          <sum-one-adv :oneAdv="oneAdv"></sum-one-adv>
+          <!-- 公共列表组件 -->
+          <div class="row w-100">
+            <block v-for="item of list" :key="item.id">
+              <common-list :item="item"></common-list>
+            </block>
+          </div>
+        </cell>
+        <!-- 上拉加载 -->
+        <loading style="height: 70px;" class="w-100 flex-row j-center a-center" @loading="onLoading" :display="loadingShow">
+          <text class="font-md text-muted">拼命加载中....</text>
+        </loading>
+      </list>
     </slider>
   </div>
 </template>
 
 <script>
 const dom = weex.requireModule('dom')
+const currentWebview = plus.webview.currentWebview()
+import SumSlider from '../../components/index/nvue/sum-slider.nvue'
+import SumIndexNavs from '../../components/index/nvue/sum-index-navs.nvue'
+import Divider from '../../components/common/divider.nvue'
+import SumThreeAdv from '../../components/index/nvue/sum-three-adv.nvue'
+import SumOneAdv from '../../components/index/nvue/sum-one-adv.nvue'
+import CommonList from '../../components/common/common-list.nvue'
 export default {
+  components: {
+    SumSlider,
+    SumIndexNavs,
+    Divider,
+    SumThreeAdv,
+    SumOneAdv,
+    CommonList
+  },
   data () {
     return {
+      refreshText: '', // 下拉刷新的text
+      refreshShow: 'hide', // 默认这个下拉刷新肯定也是hide的
+      loadingShow: 'hide', // 默认这个loading是隐藏的，上拉加载的
       tabIndex: 0,
 			tabBars: [
 				{ name: '关注', id: 'guanzhu', template: 'index' },
@@ -32,8 +77,55 @@ export default {
 				{ name: '军事', id: 'junshi', template: 'special' },
 				{ name: '历史', id: 'lishi', template: 'special' },
 				{ name: '本地', id: 'bendi', template: 'special' }
-			]
+			],
+      swipers: [
+        { src: '../../static/images/demo/demo4.jpg' },
+        { src: '../../static/images/demo/demo4.jpg' },
+        { src: '../../static/images/demo/demo4.jpg' }
+      ],
+      indexNavs: [
+        { src: '../../static/indexnav/1.png', name: '新品分类' },
+        { src: '../../static/indexnav/2.gif', name: '小米众筹' },
+        { src: '../../static/indexnav/3.gif', name: '以旧换新' },
+        { src: '../../static/indexnav/4.gif', name: '1分拼团' },
+        { src: '../../static/indexnav/5.gif', name: '超值特卖' },
+        { src: '../../static/indexnav/6.gif', name: '小米秒杀' },
+        { src: '../../static/indexnav/7.gif', name: '真心想要' },
+        { src: '../../static/indexnav/8.gif', name: '电视热卖' },
+        { src: '../../static/indexnav/9.gif', name: '家电热卖' },
+        { src: '../../static/indexnav/10.gif', name: '米粉卡' }
+      ],
+      threeAdv: [
+        { src: '../../static/images/demo/demo1.jpg' },
+        { src: '../../static/images/demo/demo2.jpg' },
+        { src: '../../static/images/demo/demo3.jpg' }
+      ],
+      oneAdv: { cover: '../../static/images/demo/demo4.jpg', title: '每日精选' },
+      list: [
+        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调1', desc: '1.5匹变频', oprice: 2699, pprice: 1399, id: 1 },
+        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调2', desc: '1.5匹变频', oprice: 2698, pprice: 1398, id: 2 },
+        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调3', desc: '1.6匹变频', oprice: 2697, pprice: 1397, id: 3 },
+        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.7匹变频', oprice: 2696, pprice: 1396, id: 4 },
+        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 5 },
+        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 6 },
+        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 7 },
+      ]
     }
+  },
+  created() {
+    /**
+     * nvue里面没有onshwo生命周期，所以下面的onShow的模拟
+     * */
+    // const currentWebview = plus.webview.currentWebview()
+    currentWebview.addEventListener('show', () => {
+      console.log('onshow添加成功')
+    })
+  },
+  beforeDestroy() {
+    // const currentWebview = plus.webview.currentWebview()
+    currentWebview.removeEventListener('show', () => {
+      console.log('onshow移除成功')
+    })
   },
   watch: {
     tabIndex(newVal, oldVal) {
@@ -63,6 +155,28 @@ export default {
           dom.scrollToElement(el, {})
         }
       })
+    },
+    // 上拉加载的method
+    onLoading() {
+      this.loadingShow = 'show'
+      setTimeout(() => {
+        this.loadingShow = 'hide'
+      }, 3000)
+    },
+    refresh(e) {
+      this.refreshShow = 'show'
+      this.refreshText = '正在刷新....'
+      setTimeout(() => {
+        this.refreshShow = 'hide'
+        this.refreshText = ''
+      }, 3000)
+    },
+    pullingdown(e) {
+      if (e.pullingDistance > e.viewHeight) {
+        this.refreshText = '释放进行刷新'
+      } else {
+        this.refreshText = ''
+      }
     }
   }
 }
