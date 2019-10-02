@@ -50,10 +50,15 @@
               <sum-index-navs :indexNavs="item2.data"></sum-index-navs>
             </template>
             <!-- 公共列表组件 -->
-            <div class="row w-100" v-if="item2.type === 'list'">
-              <block v-for="(item3, index3) of item2.data" :key="index3">
-                <common-list :item="item3"></common-list>
-              </block>
+            <div class="w-100" v-if="item2.type === 'list'">
+              <div class="p-2 border-bottom border-top">
+                <text class="text-dark font-md font-weight">热卖爆品</text>
+              </div>
+              <div class="row w-100">
+                <block v-for="(item3, index3) of item2.data" :key="index3">
+                  <common-list :item="item3"></common-list>
+                </block>
+              </div>
             </div>
           </cell>
         </template>
