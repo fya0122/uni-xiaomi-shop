@@ -152,6 +152,12 @@ export default {
     })
     // 随机生成数据
     this.newsitems = this.randomfn();
+    // 监听点击搜索框
+    uni.onNavigationBarSearchInputClicked(() => {
+      uni.navigateTo({
+        url: '../search/search'
+      })
+    })
   },
   beforeDestroy() {
     // const currentWebview = plus.webview.currentWebview()
