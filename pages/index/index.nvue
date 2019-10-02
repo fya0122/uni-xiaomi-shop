@@ -10,39 +10,63 @@
     <!-- 横向滚动列表 -->
     <slider @change="sliderChange" class="flex-1" :index="tabIndex" :infinite="false">
       <!-- :show-scrollbar="false", 默认为true, 如果设置false, 则不显示右侧滚动条 -->
-      <list v-for="item of tabBars" :key="item.id">
-        <refresh class="w-100 flex-row j-center a-center" style="height: 80px;" @refresh="refresh" @pullingdown="pullingdown" :display="refreshShow">
-          <text class="font-md text-muted">{{ refreshText }}</text>
+      <!-- 目前:key="index1"，是采用索引的，但是在平时开发中，切记不要用它 -->
+      <list v-for="(item1, index1) of newsitems" :key="index1">
+        <refresh class="w-100 flex-row j-center a-center" style="height: 80px;" @refresh="refresh" @pullingdown="pullingdown" :display="item1.refreshShow">
+          <text class="font-md text-muted">{{ item1.refreshText }}</text>
         </refresh>
+        <template v-if="tabBars[index1].template === 'index'">
+          <cell v-for="(item2, index2) of item1.data" :key="index2">
+            <!-- 轮播图组件 -->
+            <sum-slider v-if="item2.type === 'swipers'" :swipers="item2.data"></sum-slider>
+            <template v-if="item2.type === 'indexNavs'">
+              <!-- 图标分类组件 -->
+              <sum-index-navs :indexNavs="item2.data"></sum-index-navs>
+              <!-- 全局分割线组件 -->
+              <divider/>
+            </template>
+            <template v-if="item2.type === 'threeAdv'">
+              <!-- 三图广告组件 -->
+              <sum-three-adv :threeAdv="item2.data"></sum-three-adv>
+              <!-- 全局分割线组件 -->
+              <divider/>
+            </template>
+            <!-- 大图广告 -->
+            <sum-one-adv v-if="item2.type === 'oneAdv'" :oneAdv="item2.data"></sum-one-adv>
+            <!-- 公共列表组件 -->
+            <div class="row w-100" v-if="item2.type === 'list'">
+              <block v-for="(item3, index3) of item2.data" :key="index3">
+                <common-list :item="item3"></common-list>
+              </block>
+            </div>
+          </cell>
+        </template>
+        <template v-else-if="tabBars[index1].template === 'special'">
+          <cell v-for="(item2, index2) of item1.data" :key="index2">
+            <!-- 轮播图组件 -->
+            <sum-slider v-if="item2.type === 'swipers'" :swipers="item2.data"></sum-slider>
+            <template v-if="item2.type === 'indexNavs'">
+              <!-- 图标分类组件 -->
+              <sum-index-navs :indexNavs="item2.data"></sum-index-navs>
+            </template>
+            <!-- 公共列表组件 -->
+            <div class="row w-100" v-if="item2.type === 'list'">
+              <block v-for="(item3, index3) of item2.data" :key="index3">
+                <common-list :item="item3"></common-list>
+              </block>
+            </div>
+          </cell>
+        </template>
         <cell>
-          <!-- 轮播图组件 -->
-          <sum-slider :swipers="swipers"></sum-slider>
-          <!-- 图标分类组件 -->
-          <sum-index-navs :indexNavs="indexNavs"></sum-index-navs>
-          <!-- 全局分割线组件 -->
-          <divider/>
-          <!-- 三图广告组件 -->
-          <sum-three-adv :threeAdv="threeAdv"></sum-three-adv>
-          <!-- 全局分割线组件 -->
-          <divider/>
-          <!-- 大图广告 -->
-          <sum-one-adv :oneAdv="oneAdv"></sum-one-adv>
-          <!-- 公共列表组件 -->
-          <div class="row w-100">
-            <block v-for="item of list" :key="item.id">
-              <common-list :item="item"></common-list>
-            </block>
-          </div>
         </cell>
         <!-- 上拉加载 -->
-        <loading style="height: 70px;" class="w-100 flex-row j-center a-center" @loading="onLoading" :display="loadingShow">
-          <text class="font-md text-muted">拼命加载中....</text>
+        <loading style="height: 70px;" class="w-100 flex-row j-center a-center" @loading="onLoading" :display="item1.loadingShow">
+          <text class="font-md text-muted">{{ item1.loadingText }}</text>
         </loading>
       </list>
     </slider>
   </div>
 </template>
-
 <script>
 const dom = weex.requireModule('dom')
 const currentWebview = plus.webview.currentWebview()
@@ -63,9 +87,9 @@ export default {
   },
   data () {
     return {
-      refreshText: '', // 下拉刷新的text
-      refreshShow: 'hide', // 默认这个下拉刷新肯定也是hide的
-      loadingShow: 'hide', // 默认这个loading是隐藏的，上拉加载的
+      // refreshText: '', // 下拉刷新的text
+      // refreshShow: 'hide', // 默认这个下拉刷新肯定也是hide的
+      // loadingShow: 'hide', // 默认这个loading是隐藏的，上拉加载的
       tabIndex: 0,
 			tabBars: [
 				{ name: '关注', id: 'guanzhu', template: 'index' },
@@ -78,38 +102,39 @@ export default {
 				{ name: '历史', id: 'lishi', template: 'special' },
 				{ name: '本地', id: 'bendi', template: 'special' }
 			],
-      swipers: [
-        { src: '../../static/images/demo/demo4.jpg' },
-        { src: '../../static/images/demo/demo4.jpg' },
-        { src: '../../static/images/demo/demo4.jpg' }
-      ],
-      indexNavs: [
-        { src: '../../static/indexnav/1.png', name: '新品分类' },
-        { src: '../../static/indexnav/2.gif', name: '小米众筹' },
-        { src: '../../static/indexnav/3.gif', name: '以旧换新' },
-        { src: '../../static/indexnav/4.gif', name: '1分拼团' },
-        { src: '../../static/indexnav/5.gif', name: '超值特卖' },
-        { src: '../../static/indexnav/6.gif', name: '小米秒杀' },
-        { src: '../../static/indexnav/7.gif', name: '真心想要' },
-        { src: '../../static/indexnav/8.gif', name: '电视热卖' },
-        { src: '../../static/indexnav/9.gif', name: '家电热卖' },
-        { src: '../../static/indexnav/10.gif', name: '米粉卡' }
-      ],
-      threeAdv: [
-        { src: '../../static/images/demo/demo1.jpg' },
-        { src: '../../static/images/demo/demo2.jpg' },
-        { src: '../../static/images/demo/demo3.jpg' }
-      ],
-      oneAdv: { cover: '../../static/images/demo/demo4.jpg', title: '每日精选' },
-      list: [
-        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调1', desc: '1.5匹变频', oprice: 2699, pprice: 1399, id: 1 },
-        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调2', desc: '1.5匹变频', oprice: 2698, pprice: 1398, id: 2 },
-        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调3', desc: '1.6匹变频', oprice: 2697, pprice: 1397, id: 3 },
-        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.7匹变频', oprice: 2696, pprice: 1396, id: 4 },
-        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 5 },
-        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 6 },
-        { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 7 },
-      ]
+      newsitems: []
+      // swipers: [
+      //   { src: '../../static/images/demo/demo4.jpg' },
+      //   { src: '../../static/images/demo/demo4.jpg' },
+      //   { src: '../../static/images/demo/demo4.jpg' }
+      // ],
+      // indexNavs: [
+      //   { src: '../../static/indexnav/1.png', name: '新品分类' },
+      //   { src: '../../static/indexnav/2.gif', name: '小米众筹' },
+      //   { src: '../../static/indexnav/3.gif', name: '以旧换新' },
+      //   { src: '../../static/indexnav/4.gif', name: '1分拼团' },
+      //   { src: '../../static/indexnav/5.gif', name: '超值特卖' },
+      //   { src: '../../static/indexnav/6.gif', name: '小米秒杀' },
+      //   { src: '../../static/indexnav/7.gif', name: '真心想要' },
+      //   { src: '../../static/indexnav/8.gif', name: '电视热卖' },
+      //   { src: '../../static/indexnav/9.gif', name: '家电热卖' },
+      //   { src: '../../static/indexnav/10.gif', name: '米粉卡' }
+      // ],
+      // threeAdv: [
+      //   { src: '../../static/images/demo/demo1.jpg' },
+      //   { src: '../../static/images/demo/demo2.jpg' },
+      //   { src: '../../static/images/demo/demo3.jpg' }
+      // ],
+      // oneAdv: { cover: '../../static/images/demo/demo4.jpg', title: '每日精选' },
+      // list: [
+      //   { cover: '../../static/images/demo/list/1.jpg', title: '米家空调1', desc: '1.5匹变频', oprice: 2699, pprice: 1399, id: 1 },
+      //   { cover: '../../static/images/demo/list/1.jpg', title: '米家空调2', desc: '1.5匹变频', oprice: 2698, pprice: 1398, id: 2 },
+      //   { cover: '../../static/images/demo/list/1.jpg', title: '米家空调3', desc: '1.6匹变频', oprice: 2697, pprice: 1397, id: 3 },
+      //   { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.7匹变频', oprice: 2696, pprice: 1396, id: 4 },
+      //   { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 5 },
+      //   { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 6 },
+      //   { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 7 },
+      // ]
     }
   },
   created() {
@@ -120,6 +145,8 @@ export default {
     currentWebview.addEventListener('show', () => {
       console.log('onshow添加成功')
     })
+    // 随机生成数据
+    this.newsitems = this.randomfn();
   },
   beforeDestroy() {
     // const currentWebview = plus.webview.currentWebview()
@@ -135,9 +162,19 @@ export default {
   methods: {
     clickScrollItem(index) {
       this.tabIndex = index
+      let flag = true
+      if (this.newsitems[index].data.length > 0) {
+        flag = false
+      }
+      this.addData(index, flag)
     },
     sliderChange(e){
       this.tabIndex = e.index
+      let flag = true
+      if (this.newsitems[e.index].data.length > 0) {
+        flag = false
+      }
+      this.addData(e.index, flag)
     },
     /* 这个是我自己定义的，如果按照老师那么走的话，是很吃性能的 */
     async myScrollerChange(index) {
@@ -149,7 +186,6 @@ export default {
           let newE1 = this.$refs[`tab${index-5}`][0]
           return dom.scrollToElement(newE1, {})
         }
-        
         /* 处于左边 */
         if (res.size.left < 0) {
           dom.scrollToElement(el, {})
@@ -158,26 +194,206 @@ export default {
     },
     // 上拉加载的method
     onLoading() {
-      this.loadingShow = 'show'
+      // this.loadingShow = 'show'
+      // setTimeout(() => {
+      //  this.loadingShow = 'hide'
+      // }, 3000)
+      var index = this.tabIndex
+      this.newsitems[index].loadingShow = 'show'
       setTimeout(() => {
-        this.loadingShow = 'hide'
-      }, 3000)
+        this.addData(index, true)
+        this.newsitems[index].loadingShow = 'hide'
+      }, 2222)
     },
     refresh(e) {
-      this.refreshShow = 'show'
-      this.refreshText = '正在刷新....'
+      var index = this.tabIndex
+      this.newsitems[index].refreshShow = 'show'
+      this.newsitems[index].refreshText = '正在刷新....'
       setTimeout(() => {
-        this.refreshShow = 'hide'
-        this.refreshText = ''
-      }, 3000)
+        if (index === 0) {
+          let newData = JSON.parse(JSON.stringify(this.newsitems[index].data))
+          for (const item of newData) {
+            if (item.type === 'list') {
+              console.log(JSON.stringify(item))
+              item.data = []
+              let myData = [
+                { cover: '../../static/images/demo/list/1.jpg', title: '米家空调1', desc: '1.5匹变频', oprice: 2699, pprice: 1399, id: 1 },
+                { cover: '../../static/images/demo/list/1.jpg', title: '米家空调2', desc: '1.5匹变频', oprice: 2698, pprice: 1398, id: 2 },
+                { cover: '../../static/images/demo/list/1.jpg', title: '米家空调3', desc: '1.6匹变频', oprice: 2697, pprice: 1397, id: 3 },
+                { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.7匹变频', oprice: 2696, pprice: 1396, id: 4 },
+                { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 5 }
+              ]
+              item.data = myData
+            }
+          }
+          this.newsitems[index].data = newData
+          this.addData(index, false)
+        } else {
+          this.newsitems[index].data = [] // 先置空
+          this.addData(index, true)
+        }
+        this.newsitems[index].refreshShow = 'hide'
+        this.newsitems[index].refreshText = ''
+      }, 2222)
+      // this.refreshShow = 'show'
+      // this.refreshText = '正在刷新....'
+      // setTimeout(() => {
+        // this.refreshShow = 'hide'
+        // this.refreshText = ''
+      // }, 3000)
     },
     pullingdown(e) {
+      var index = this.tabIndex
       if (e.pullingDistance > e.viewHeight) {
-        this.refreshText = '释放进行刷新'
+        this.newsitems[index].refreshText = '释放进行刷新'
+        // this.refreshText = '释放进行刷新'
       } else {
-        this.refreshText = ''
+        // this.refreshText = ''
+        this.newsitems[index].refreshText = ''
       }
-    }
+    },
+    addData(e, flag) {
+      if (flag === false) {
+        return
+      }
+      // if (this.newsitems[e].data.length > 30) {
+      	// this.newsitems[e].loadingText = '———— 我是有底线的 ————';
+      	// return;
+      // }
+      let arr = []
+      if (this.newsitems[e].data.length > 0) {
+        arr = [
+          // 列表
+          {
+            type: 'list',
+            data: [
+              { cover: '../../static/images/demo/list/1.jpg', title: '米家空调1', desc: '1.5匹变频', oprice: 2699, pprice: 1399, id: 1 },
+              { cover: '../../static/images/demo/list/1.jpg', title: '米家空调2', desc: '1.5匹变频', oprice: 2698, pprice: 1398, id: 2 },
+              { cover: '../../static/images/demo/list/1.jpg', title: '米家空调3', desc: '1.6匹变频', oprice: 2697, pprice: 1397, id: 3 },
+              { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.7匹变频', oprice: 2696, pprice: 1396, id: 4 },
+              { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 5 }
+            ]
+          }
+        ]
+        let newData = JSON.parse(JSON.stringify(this.newsitems[e].data))
+        for (const item1 of arr[0].data) {
+          for (const item2 of newData) {
+            if (item2.type === 'list') {
+              item2.data.push(item1)
+            }
+          }
+        }
+        this.newsitems[e].data = newData
+      } else {
+        arr = [
+          // 轮播图
+          {
+            type: 'swipers',
+            data: [
+              { id: 1, src: '../../static/images/demo/demo4.jpg' },
+              { id: 2, src: '../../static/images/demo/demo4.jpg' },
+              { id: 3, src: '../../static/images/demo/demo4.jpg' },
+            ]
+          },
+          // icons
+          {
+            type: 'indexNavs',
+            data: [
+              { id: 1, src: '../../static/indexnav/1.png', name: '新品发布' },
+              { id: 2, src: '../../static/indexnav/2.gif', name: '小品众筹' },
+              { id: 3, src: '../../static/indexnav/3.gif', name: '以旧换新' },
+              { id: 4, src: '../../static/indexnav/4.gif', name: '一分换图' },
+              { id: 5, src: '../../static/indexnav/5.gif', name: '超值特卖' }
+            ]
+          },
+          // 列表
+          {
+            type: 'list',
+            data: [
+              { cover: '../../static/images/demo/list/1.jpg', title: '米家空调1', desc: '1.5匹变频', oprice: 2699, pprice: 1399, id: 1 },
+              { cover: '../../static/images/demo/list/1.jpg', title: '米家空调2', desc: '1.5匹变频', oprice: 2698, pprice: 1398, id: 2 },
+              { cover: '../../static/images/demo/list/1.jpg', title: '米家空调3', desc: '1.6匹变频', oprice: 2697, pprice: 1397, id: 3 },
+              { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.7匹变频', oprice: 2696, pprice: 1396, id: 4 },
+              { cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 5 }
+            ]
+          }
+        ];
+        this.newsitems[e].data = [...this.newsitems[e].data, ...arr]; // 算是合并吧
+      }
+    },
+		// 生成随机数据
+		randomfn() {
+			let ary = [];
+			const tabBarsLength = this.tabBars.length;
+			for (let i = 0; i < tabBarsLength; i++) {
+				let aryItem = {
+          refreshText: '', // 下拉刷新的text
+          refreshShow: 'hide', // 默认这个下拉刷新肯定也是hide的
+          loadingShow: 'hide', // 默认这个loading是隐藏的，上拉加载的
+          loadingText: '拼命加载中....',
+					data: []
+				};
+				if (this.tabBars[i].template === 'index') {
+					aryItem.data = [
+						// 轮播图
+						{
+							type: 'swipers',
+							data: [
+								{ id: 1, src: '../../static/images/demo/demo4.jpg' },
+								{ id: 2, src: '../../static/images/demo/demo4.jpg' },
+								{ id: 3, src: '../../static/images/demo/demo4.jpg' }
+							]
+						},
+						// icons
+						{
+							type: 'indexNavs',
+							data: [
+								{ id: 1, src: '../../static/indexnav/1.png', name: '新品发布' },
+								{ id: 2, src: '../../static/indexnav/2.gif', name: '小品众筹' },
+								{ id: 3, src: '../../static/indexnav/3.gif', name: '以旧换新' },
+								{ id: 4, src: '../../static/indexnav/4.gif', name: '一分换图' },
+								{ id: 5, src: '../../static/indexnav/5.gif', name: '超值特卖' },
+								{ id: 6, src: '../../static/indexnav/6.gif', name: '小米秒卡' },
+								{ id: 7, src: '../../static/indexnav/7.gif', name: '真心想要' },
+								{ id: 8, src: '../../static/indexnav/8.gif', name: '电视热卖' },
+								{ id: 9, src: '../../static/indexnav/9.gif', name: '家电热卖' },
+								{ id: 10, src: '../../static/indexnav/10.gif', name: '米粉卡' }
+							]
+						},
+						// 三个图的广告
+						{
+							type: 'threeAdv',
+							data: [
+								{ src: '../../static/images/demo/demo1.jpg' },
+								{ src: '../../static/images/demo/demo2.jpg' },
+								{ src: '../../static/images/demo/demo2.jpg' }
+							]
+						},
+						// 大图广告
+						{
+							type: 'oneAdv',
+							data: {
+								title: '每日精选',
+								cover: '../../static/images/demo/demo4.jpg'
+							}
+						},
+						// 列表
+						{
+							type: 'list',
+							data: [
+								{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调1', desc: '1.5匹变频', oprice: 2699, pprice: 1399, id: 1 },
+								{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调2', desc: '1.5匹变频', oprice: 2698, pprice: 1398, id: 2 },
+								{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调3', desc: '1.6匹变频', oprice: 2697, pprice: 1397, id: 3 },
+								{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.7匹变频', oprice: 2696, pprice: 1396, id: 4 },
+								{ cover: '../../static/images/demo/list/1.jpg', title: '米家空调4', desc: '1.9匹变频', oprice: 2695, pprice: 1395, id: 5 }
+							]
+						}
+					];
+				}
+				ary.push(aryItem);
+			}
+			return ary;
+		}
   }
 }
 </script>
