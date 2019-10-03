@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <view>
     <card headTitle="热门搜索" bodyCover="../../static/images/demo/search-banner.png"></card>
     <!-- 多色按钮 -->
     <view class="px-1 mb-2">
@@ -16,7 +16,7 @@
       <uni-list-item title="小米" :showArrow="false"></uni-list-item>
       <uni-list-item title="小米2" :showArrow="false"></uni-list-item>
     </card>
-  </div>
+  </view>
 </template>
 
 <script>
@@ -44,6 +44,14 @@ export default {
         { name: '健康' },
         { name: '酷玩' }
       ]
+    }
+  },
+  // 监听导航栏的点击事件
+  onNavigationBarButtonTap(e) {
+    if (e.index === 0) {
+      uni.navigateTo({
+        url: '../search-list/search-list'
+      })
     }
   },
   components: {
