@@ -18,5 +18,10 @@
       }
     ]
   },
-  "usingComponents": {}
+  "usingComponents": {
+    "card": "/components/common/card",
+    "color-tag": "/components/search/color-tag",
+    "divider": "/components/common/divider",
+    "uni-list-item": "/components/uni-ui/uni-list-item/uni-list-item"
+  }
 }

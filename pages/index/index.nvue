@@ -225,7 +225,6 @@ export default {
           let newData = JSON.parse(JSON.stringify(this.newsitems[index].data))
           for (const item of newData) {
             if (item.type === 'list') {
-              console.log(JSON.stringify(item))
               item.data = []
               let myData = [
                 { cover: '../../static/images/demo/list/1.jpg', title: '米家空调1', desc: '1.5匹变频', oprice: 2699, pprice: 1399, id: 1 },
